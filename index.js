@@ -63,8 +63,12 @@ const download = (dataUrl) => {
 
 // Move $avatar around canvas according to drag event
 const track = (e) => {
-  const x = Math.max(Math.min(imgPos.x+(e.pageX-dragStart.x), 0), ($canvas.width - $avatar.width));
-  const y = Math.max(Math.min(imgPos.y+(e.pageY-dragStart.y), 0), ($canvas.height - $avatar.height));
+
+  let x,y;
+
+    x = Math.max(Math.min(imgPos.x+(e.pageX-dragStart.x), 0), ($canvas.width - $avatar.width));
+    y = Math.max(Math.min(imgPos.y+(e.pageY-dragStart.y), 0), ($canvas.height - $avatar.height));
+
   // Draw the avatar on the $canvas
   $canvas.getContext('2d')
     .drawImage($avatar, x, y, $avatar.width, $avatar.height);
@@ -72,17 +76,23 @@ const track = (e) => {
 
 // Setup at the start of a drag event
 const start = (e) => {
-  dragStart = { x: e.pageX, y: e.pageY };
-  $body.addEventListener('mousemove', track);
+
+    dragStart = { x: e.pageX, y: e.pageY };
+    $body.addEventListener('mousemove', track);
+    $body.addEventListener('touchmove', touchHandler);
+  
 };
 
 // Teardown ar the end of a drag event
 const stop = (e) => {
-  $body.removeEventListener('mousemove', track);
-  imgPos = {
-    x: Math.max(Math.min(imgPos.x+(e.pageX-dragStart.x), 0), ($canvas.width - $avatar.width)),
-    y: Math.max(Math.min(imgPos.y+(e.pageY-dragStart.y), 0), ($canvas.height - $avatar.height)),
-  };
+
+    $body.removeEventListener('mousemove', track);
+    $body.removeEventListener('touchmove', touchHandler);
+    imgPos = {
+      x: Math.max(Math.min(imgPos.x+(e.pageX-dragStart.x), 0), ($canvas.width - $avatar.width)),
+      y: Math.max(Math.min(imgPos.y+(e.pageY-dragStart.y), 0), ($canvas.height - $avatar.height)),
+    };
+
 };
 
 // Extract image dataUrl from drop event
@@ -142,6 +152,17 @@ $canvas.addEventListener('mousedown', start);
 $body.addEventListener('mouseup', stop);
 $body.addEventListener('mouseleave', stop);
 
+
+//Pan image on touch and drag on $canvas
+$canvas.addEventListener('touchstart', touchHandler);
+
+// Stop any tracking at end of touch drag
+$body.addEventListener('touchend', touchHandler);
+// $body.addEventListener('touchcancel', touchHandler);
+
+
+
+
 // When the user uses the arrow keys to change filter
 $body.addEventListener('keyup', (e) => {
   // Right arrow for next filter
@@ -153,9 +174,58 @@ $body.addEventListener('keyup', (e) => {
 });
 
 // Listen for interaction with controls
-$next.addEventListener('click', nextFilter);
+// $next.addEventListener('click', nextFilter);
 $download.addEventListener('click', download);
-$prev.addEventListener('click', prevFilter);
+// $prev.addEventListener('click', prevFilter);
 
 // Apply default avatar
 drawAvatar('avatar.jpg');
+
+const fileInput = document.querySelector("#file-upload");
+console.log(fileInput);
+
+fileInput.addEventListener('change', (e)=>{
+  e.stopPropagation();
+  e.preventDefault();
+  // Setup file reader
+  const reader = new FileReader();
+  const file =  e.target.files[0];
+  console.log(file);
+
+  const acceptedFiles = ['png', 'bmp', 'jpg', 'jpeg', 'gif'];
+  // Ensure that the file type
+  if (!acceptedFiles.includes(file.type.replace('image/', ''))) {
+    alert('Incompatible file type!');
+    return;
+  }
+  // Initiate reading of file
+  reader.onload = file => drawAvatar(file.srcElement.result);
+  reader.readAsDataURL(file);
+})
+
+function touchHandler(event)
+{
+    var touches = event.changedTouches,
+        first = touches[0],
+        type = "";
+    switch(event.type)
+    {
+        case "touchstart": type = "mousedown"; break;
+        case "touchmove":  type = "mousemove"; break;        
+        case "touchend":   type = "mouseup";   break;
+        default:           return;
+    }
+
+    // initMouseEvent(type, canBubble, cancelable, view, clickCount, 
+    //                screenX, screenY, clientX, clientY, ctrlKey, 
+    //                altKey, shiftKey, metaKey, button, relatedTarget);
+
+    var simulatedEvent = document.createEvent("MouseEvent");
+    simulatedEvent.initMouseEvent(type, true, true, window, 1, 
+                                  first.screenX, first.screenY, 
+                                  first.clientX, first.clientY, false, 
+                                  false, false, false, 0/*left*/, null);
+
+    first.target.dispatchEvent(simulatedEvent);
+    event.preventDefault();
+}

@@ -1,4 +1,4 @@
-(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 'use strict';
 
 var _fileSaver = require('file-saver');
@@ -75,21 +75,30 @@ var download = function download(dataUrl) {
 
 // Move $avatar around canvas according to drag event
 var track = function track(e) {
-  var x = Math.max(Math.min(imgPos.x + (e.pageX - dragStart.x), 0), $canvas.width - $avatar.width);
-  var y = Math.max(Math.min(imgPos.y + (e.pageY - dragStart.y), 0), $canvas.height - $avatar.height);
+
+  var x = void 0,
+      y = void 0;
+
+  x = Math.max(Math.min(imgPos.x + (e.pageX - dragStart.x), 0), $canvas.width - $avatar.width);
+  y = Math.max(Math.min(imgPos.y + (e.pageY - dragStart.y), 0), $canvas.height - $avatar.height);
+
   // Draw the avatar on the $canvas
   $canvas.getContext('2d').drawImage($avatar, x, y, $avatar.width, $avatar.height);
 };
 
 // Setup at the start of a drag event
 var start = function start(e) {
+
   dragStart = { x: e.pageX, y: e.pageY };
   $body.addEventListener('mousemove', track);
+  $body.addEventListener('touchmove', touchHandler);
 };
 
 // Teardown ar the end of a drag event
 var stop = function stop(e) {
+
   $body.removeEventListener('mousemove', track);
+  $body.removeEventListener('touchmove', touchHandler);
   imgPos = {
     x: Math.max(Math.min(imgPos.x + (e.pageX - dragStart.x), 0), $canvas.width - $avatar.width),
     y: Math.max(Math.min(imgPos.y + (e.pageY - dragStart.y), 0), $canvas.height - $avatar.height)
@@ -159,6 +168,14 @@ $canvas.addEventListener('mousedown', start);
 $body.addEventListener('mouseup', stop);
 $body.addEventListener('mouseleave', stop);
 
+//Pan image on touch and drag on $canvas
+$canvas.addEventListener('touchstart', touchHandler);
+
+// Stop any tracking at end of touch drag
+$body.addEventListener('touchend', touchHandler);
+// $body.addEventListener('touchcancel', touchHandler);
+
+
 // When the user uses the arrow keys to change filter
 $body.addEventListener('keyup', function (e) {
   // Right arrow for next filter
@@ -170,12 +187,62 @@ $body.addEventListener('keyup', function (e) {
 });
 
 // Listen for interaction with controls
-$next.addEventListener('click', nextFilter);
+// $next.addEventListener('click', nextFilter);
 $download.addEventListener('click', download);
-$prev.addEventListener('click', prevFilter);
+// $prev.addEventListener('click', prevFilter);
 
 // Apply default avatar
 drawAvatar('avatar.jpg');
+
+var fileInput = document.querySelector("#file-upload");
+console.log(fileInput);
+
+fileInput.addEventListener('change', function (e) {
+  e.stopPropagation();
+  e.preventDefault();
+  // Setup file reader
+  var reader = new FileReader();
+  var file = e.target.files[0];
+  console.log(file);
+
+  var acceptedFiles = ['png', 'bmp', 'jpg', 'jpeg', 'gif'];
+  // Ensure that the file type
+  if (!acceptedFiles.includes(file.type.replace('image/', ''))) {
+    alert('Incompatible file type!');
+    return;
+  }
+  // Initiate reading of file
+  reader.onload = function (file) {
+    return drawAvatar(file.srcElement.result);
+  };
+  reader.readAsDataURL(file);
+});
+
+function touchHandler(event) {
+  var touches = event.changedTouches,
+      first = touches[0],
+      type = "";
+  switch (event.type) {
+    case "touchstart":
+      type = "mousedown";break;
+    case "touchmove":
+      type = "mousemove";break;
+    case "touchend":
+      type = "mouseup";break;
+    default:
+      return;
+  }
+
+  // initMouseEvent(type, canBubble, cancelable, view, clickCount, 
+  //                screenX, screenY, clientX, clientY, ctrlKey, 
+  //                altKey, shiftKey, metaKey, button, relatedTarget);
+
+  var simulatedEvent = document.createEvent("MouseEvent");
+  simulatedEvent.initMouseEvent(type, true, true, window, 1, first.screenX, first.screenY, first.clientX, first.clientY, false, false, false, false, 0 /*left*/, null);
+
+  first.target.dispatchEvent(simulatedEvent);
+  event.preventDefault();
+}
 
 },{"file-saver":2}],2:[function(require,module,exports){
 /* FileSaver.js
