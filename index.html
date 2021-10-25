@@ -2,9 +2,10 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Framer</title>
     <link rel="stylesheet" href="index.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
   </head>
   <body>
     <header>
@@ -12,10 +13,10 @@
       <p>Upload or drag your profile picture onto the page and adjust the picture within the frame</p>
     </header>
     <div class="upload">
-      <div class="upload-area">
+      <form action="/" method="post" class="upload-area">
         <label for="file-upload">Upload your picture here</label>
-        <input type="file" id="file-upload">
-    </div>
+        <input type="file" id="file-upload" name="file" accept="image/*">
+    </form>
     </div>
     <main>
       <canvas></canvas>
