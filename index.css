@@ -90,16 +90,19 @@ controls- {
   text-align: center;
   bottom: 0;
   left: 0;
-  padding: 50px 20px;
+  padding: 50px 0px;
   width: 100%;
 }
 
 .upload{
+  position: relative;
   text-align: center;
   margin: 50px 0 0 0;
+  z-index: 10;
 }
 
 .upload-area{
+  z-index: 999;
   padding: 30px 20px;
   width: 60%;
   margin: 0 auto;
@@ -111,8 +114,11 @@ controls- {
 }
 
 #file-upload{
+  display: block;
+  z-index: 1000 !important;
   font-size: 24px;
   width: 100%;
+  position: relative;
 }
 
 .download{
@@ -121,7 +127,7 @@ controls- {
   background-color: #fff;
   border-radius: 50px;
   display: block;
-  margin: 0 auto;
+  margin: 30px auto;
 }
 
 .download:hover{
