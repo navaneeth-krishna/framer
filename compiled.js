@@ -172,7 +172,7 @@ $body.addEventListener('mouseleave', stop);
 $canvas.addEventListener('touchstart', touchHandler);
 
 // Stop any tracking at end of touch drag
-$body.addEventListener('touchend', touchHandler);
+$canvas.addEventListener('touchend', touchHandler);
 // $body.addEventListener('touchcancel', touchHandler);
 
 
@@ -189,6 +189,7 @@ $body.addEventListener('keyup', function (e) {
 // Listen for interaction with controls
 // $next.addEventListener('click', nextFilter);
 $download.addEventListener('click', download);
+$download.addEventListener('touchstart', download);
 // $prev.addEventListener('click', prevFilter);
 
 // Apply default avatar
@@ -197,7 +198,16 @@ drawAvatar('avatar.jpg');
 var fileInput = document.querySelector("#file-upload");
 console.log(fileInput);
 
+// fileInput.addEventListener('touchstart', ()=>{
+//   console.log("Tap Registered!");
+// })
+
+// fileInput.addEventListener('click', ()=>{
+//   console.log("Click Registered!");
+// })
+
 fileInput.addEventListener('change', function (e) {
+
   e.stopPropagation();
   e.preventDefault();
   // Setup file reader
