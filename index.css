@@ -1,7 +1,6 @@
-@-ms-viewport{
+@-ms-viewport {
   width: device-width;
 }
-
 
 body {
   width: 100%;
@@ -15,7 +14,7 @@ header {
   justify-content: center;
   flex-direction: column;
   height: 250px;
-  border-bottom: 1px solid rgba(0,0,0,.1);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 header h1 {
   font-size: 36px;
@@ -37,13 +36,13 @@ main {
   overflow: hidden;
   font-family: sans-serif;
 }
-canvas  {
+canvas {
   display: block;
-  width:62vmin;
-  height:62vmin;
-  
+  width: 62vmin;
+  height: 62vmin;
+
   border: 1rem solid white;
-  box-shadow: 0 0 1rem 0 rgba(0,0,0,0.1);
+  box-shadow: 0 0 1rem 0 rgba(0, 0, 0, 0.1);
 }
 overlay- {
   position: absolute;
@@ -57,8 +56,8 @@ overlay- {
 }
 overlay- img {
   display: block;
-  width:62vmin;
-  height:62vmin;
+  width: 62vmin;
+  height: 62vmin;
   margin-left: calc(50% - 31vmin);
   pointer-events: none;
   background: #f2f2f2;
@@ -68,7 +67,7 @@ overlay- img.active {
   background: transparent;
 }
 overlay- img:not(.active) {
-  transform: scale(.618);
+  transform: scale(0.618);
 }
 
 button {
@@ -94,14 +93,14 @@ controls- {
   width: 100%;
 }
 
-.upload{
+.upload {
   position: relative;
   text-align: center;
   margin: 50px 0 0 0;
   z-index: 10;
 }
 
-.upload-area{
+.upload-area {
   z-index: 999;
   padding: 30px 20px;
   width: 60%;
@@ -110,10 +109,10 @@ controls- {
   border-width: 5px;
   border-spacing: 10px;
   font-size: 20px;
-  color:rgb(54, 54, 54);
+  color: rgb(54, 54, 54);
 }
 
-#file-upload{
+#file-upload {
   display: block;
   z-index: 1000 !important;
   font-size: 24px;
@@ -121,22 +120,22 @@ controls- {
   position: relative;
 }
 
-.download{
-  color: #74A340;
-  border: 1px solid #74A340;
+.download {
+  color: #1d4a9b;
+  border: 1px solid #1d4a9b;
   background-color: #fff;
   border-radius: 50px;
   display: block;
   margin: 30px auto;
 }
 
-.download:hover{
+.download:hover {
   color: white;
-  background-color: #74A340;
+  background-color: #1d4a9b;
 }
 
 @media screen and (max-width: 768px) {
-  .upload-area{
+  .upload-area {
     width: calc(90% - 40px);
   }
 }
