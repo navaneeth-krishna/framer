@@ -121,8 +121,8 @@ controls- {
 }
 
 .download {
-  color: #1d4a9b;
-  border: 1px solid #1d4a9b;
+  color: #26740e;
+  border: 1px solid #26740e;
   background-color: #fff;
   border-radius: 50px;
   display: block;
@@ -131,7 +131,7 @@ controls- {
 
 .download:hover {
   color: white;
-  background-color: #1d4a9b;
+  background-color: #26740e;
 }
 
 @media screen and (max-width: 768px) {
